@@ -1,36 +1,25 @@
 {
-  "name": "personal_blog",
+  "name": "@0x1461a0.cc/monorepo",
+  "private": true,
   "type": "module",
-  "version": "0.0.1",
+  "packageManager": "pnpm@10.29.3",
   "scripts": {
-    "dev": "astro dev",
-    "prebuild": "rm -rf content && git clone --depth 1 ${CONTENT_REPO_URL} content && rm -rf content/.git",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/rss": "^4.0.14",
-    "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/vercel": "^9.0.2",
-    "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "astro": "^5.16.5",
-    "dayjs": "^1.11.19",
-    "hast-util-to-string": "^3.0.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "rehype-sanitize": "^6.0.0",
-    "sharp": "^0.34.3",
-    "tailwindcss": "^4.1.18",
-    "unist-util-visit": "^5.0.0"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "preview": "turbo run preview",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.19",
-    "@types/hast": "^3.0.4",
-    "@types/mdast": "^4.0.4"
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
+    "@commitlint/types": "^20.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "turbo": "^2.8.9",
+    "typescript": "^5.9.3"
+  },
+  "volta": {
+    "node": "24.13.1",
+    "pnpm": "10.29.3"
   }
 }

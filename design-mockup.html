@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0x1461A0's Blog — Design Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Inter:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-heading: 'Newsreader', 'Noto Serif SC', serif;
+    --bg-primary: #faf8f5;
+    --bg-secondary: #f3efe9;
+    --bg-card: #ffffff;
+    --bg-code: #f6f2ec;
+    --bg-code-block: #2c2d30;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6560;
+    --text-tertiary: #a09890;
+    --text-code: #e8e4df;
+    --accent: #c87941;
+    --accent-soft: rgba(200, 121, 65, 0.10);
+    --accent-hover: #b06830;
+    --border: #e8e2da;
+    --border-light: #f0ebe4;
+    --tag-bg: #eee8df;
+    --tag-text: #7a7068;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+    --year-color: #e8e2da;
+    --scrollbar-thumb: #d0c8be;
+    --scrollbar-track: transparent;
+    --code-keyword: #c87941;
+    --code-string: #6a8f5e;
+    --code-comment: #8a8580;
+    --code-func: #5a7fb5;
+    --code-num: #c87941;
+    --divider-gradient: linear-gradient(90deg, transparent, #d8d0c6 20%, #d8d0c6 80%, transparent);
+    --nav-active: #1a1a1a;
+    --nav-inactive: #a09890;
+  }
+
+  .dark {
+    --bg-primary: #1e1f21;
+    --bg-secondary: #262729;
+    --bg-card: #2a2b2e;
+    --bg-code: #323336;
+    --bg-code-block: #18191b;
+    --text-primary: #e8e4df;
+    --text-secondary: #9a958e;
+    --text-tertiary: #5e5a55;
+    --text-code: #c8c4bf;
+    --accent: #d4915a;
+    --accent-soft: rgba(212, 145, 90, 0.12);
+    --accent-hover: #e0a06a;
+    --border: #353638;
+    --border-light: #2f3032;
+    --tag-bg: #333436;
+    --tag-text: #908880;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+    --year-color: #2e2f31;
+    --scrollbar-thumb: #454648;
+    --scrollbar-track: transparent;
+    --code-keyword: #d4915a;
+    --code-string: #8ab87a;
+    --code-comment: #6a6560;
+    --code-func: #7a9fd5;
+    --code-num: #d4915a;
+    --divider-gradient: linear-gradient(90deg, transparent, #3a3b3d 20%, #3a3b3d 80%, transparent);
+    --nav-active: #e8e4df;
+    --nav-inactive: #5e5a55;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  body {
+    font-family: 'Instrument Sans', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    transition: background 0.4s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+  /* ---- Mockup Section Labels ---- */
+  .mockup-label {
+    text-align: center;
+    padding: 56px 20px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    position: relative;
+  }
+  .mockup-label::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 1px;
+    background: var(--divider-gradient);
+  }
+  .mockup-label span {
+    background: var(--bg-primary);
+    padding: 0 16px;
+    position: relative;
+  }
+
+  /* ---- Layout ---- */
+  .container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- Header ---- */
+  .site-header {
+    padding: 36px 0 0;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .header-nav a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--nav-inactive);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .header-nav a:hover {
+    color: var(--nav-active);
+    background: var(--bg-secondary);
+  }
+  .header-nav a.active {
+    color: var(--nav-active);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .header-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .header-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+  .header-btn svg { width: 17px; height: 17px; }
+
+  /* ---- Handwritten Logo SVG ---- */
+  .logo-svg {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+  .logo-svg .hc {
+    stroke: var(--text-primary);
+    stroke-width: 2.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: handwrite 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: var(--d, 0s);
+  }
+  @keyframes handwrite {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ---- Footer ---- */
+  .site-footer {
+    margin-top: 48px;
+    padding: 28px 0 36px;
+    border-top: 1px solid var(--border-light);
+  }
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-copy {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  /* ================================================ */
+  /*  PAGE 1: HOME / ABOUT                            */
+  /* ================================================ */
+  .home-hero {
+    padding: 80px 0 40px;
+  }
+  .home-title {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.35;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .home-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .home-bio {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    max-width: 540px;
+    margin-bottom: 36px;
+  }
+  .home-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .home-link-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .home-link-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .home-link-item svg { width: 15px; height: 15px; }
+
+
+  /* ================================================ */
+  /*  PAGE 2: BLOG LIST                               */
+  /* ================================================ */
+
+  .year-group {
+    margin-bottom: 44px;
+    position: relative;
+  }
+  .year-label {
+    font-family: var(--font-heading);
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--year-color);
+    line-height: 1;
+    margin-bottom: 16px;
+    user-select: none;
+    letter-spacing: -3px;
+    transition: color 0.3s;
+  }
+  .post-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .post-link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  .post-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 0;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: height 0.25s ease;
+  }
+  .post-link:hover { background: var(--bg-secondary); }
+  .post-link:hover::before { height: 24px; }
+  .post-title {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    min-width: 0;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .post-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  .post-tags { display: flex; gap: 6px; }
+  .tag {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  /* ================================================ */
+  /*  PAGE 3: POST DETAIL                             */
+  /* ================================================ */
+  .article-header {
+    padding-top: 48px;
+    padding-bottom: 36px;
+  }
+  .article-title {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+  .article-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 14px;
+    color: var(--text-tertiary);
+  }
+  .article-meta-bar .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .article-meta-bar svg { width: 15px; height: 15px; opacity: 0.6; }
+  .article-meta-bar .meta-dot {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+    opacity: 0.4;
+  }
+
+  .article-body { padding-bottom: 64px; }
+  .article-body h2 {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+  }
+  .article-body h3 {
+    font-family: var(--font-heading);
+    font-size: 19px;
+    font-weight: 500;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  .article-body p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+  .article-body strong { color: var(--text-primary); font-weight: 600; }
+  .article-body a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
+    transition: opacity 0.2s;
+  }
+  .article-body a:hover { opacity: 0.7; }
+  .article-body ul, .article-body ol {
+    margin-bottom: 20px;
+    padding-left: 24px;
+    color: var(--text-secondary);
+  }
+  .article-body li {
+    font-size: 16px;
+    line-height: 1.85;
+    margin-bottom: 6px;
+  }
+  .article-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    background: var(--bg-code);
+    color: var(--text-primary);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .article-body blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    margin: 24px 0;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+  .article-body blockquote p { margin-bottom: 0; }
+
+  .code-block {
+    position: relative;
+    margin: 28px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-code-block);
+    box-shadow: var(--shadow-md);
+  }
+  .code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .code-block-lang-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .code-block-copy-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .code-block-copy-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+  }
+  .code-block-copy-btn svg { width: 14px; height: 14px; }
+  .code-block pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text-code);
+    background: transparent;
+  }
+  .code-block pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+  .code-kw { color: var(--code-keyword); }
+  .code-str { color: var(--code-string); }
+  .code-cmt { color: var(--code-comment); font-style: italic; }
+  .code-fn { color: var(--code-func); }
+  .code-num { color: var(--code-num); }
+
+  /* TOC floating sidebar */
+  .toc-float {
+    position: fixed;
+    right: calc((100vw - 740px) / 2 - 180px);
+    top: 200px;
+    width: 160px;
+    display: none;
+  }
+  @media (min-width: 1160px) { .toc-float { display: block; } }
+  .toc-float ul { list-style: none; padding: 0; }
+  .toc-float li { margin-bottom: 8px; }
+  .toc-float a {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: color 0.2s;
+    line-height: 1.4;
+    display: block;
+  }
+  .toc-float a:hover, .toc-float a.active { color: var(--accent); }
+  .toc-float li.indent { padding-left: 12px; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 640px) {
+    .home-title { font-size: 28px; }
+    .year-label { font-size: 48px; letter-spacing: -2px; }
+    .post-link { padding: 10px 12px; flex-direction: column; gap: 4px; }
+    .post-meta { align-self: flex-start; }
+    .article-title { font-size: 28px; }
+    .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+    .header-nav { display: none; }
+    .home-links { gap: 8px; }
+  }
+
+  /* ---- Font Switcher Panel ---- */
+  .font-switcher {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    width: 220px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .font-switcher-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .font-switcher-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .font-switcher-list li {
+    position: relative;
+  }
+  .font-switcher-list button {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .font-switcher-list button:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+  .font-switcher-list button.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .font-switcher-list .fs-label {
+    font-weight: 500;
+  }
+  .font-switcher-list .fs-style {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+
+  /* ---- Fade animation ---- */
+  .fade-up {
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+
+<!-- ============================================================ -->
+<!--  PAGE 1: HOME / ABOUT  ·  个人主页                            -->
+<!-- ============================================================ -->
+<div class="mockup-label"><span>Page 1 · Home / About · 个人主页</span></div>
+
+<header class="site-header container">
+  <div class="header-inner">
+    <a href="#" class="logo-group" aria-label="0x1461A0">
+      <svg class="logo-svg" viewBox="0 0 248 48" fill="none">
+        <!-- 0 -->
+        <path class="hc" style="--d:0s" d="M16,6 C9,8 4,15 3,24 C2,34 7,43 16,43 C25,42 29,33 29,24 C29,14 24,5 16,8"/>
+        <!-- x -->
+        <path class="hc" style="--d:.13s" d="M37,13 C41,19 49,31 55,37"/>
+        <path class="hc" style="--d:.22s" d="M55,13 C51,19 43,31 37,37"/>
+        <!-- 1 -->
+        <path class="hc" style="--d:.31s" d="M64,18 C67,13 72,7 72,7 C72,17 72,30 72,40"/>
+        <!-- 4 -->
+        <path class="hc" style="--d:.43s" d="M87,7 C87,14 86,22 86,28 C92,28 100,28 108,28"/>
+        <path class="hc" style="--d:.54s" d="M103,12 C103,20 103,30 103,40"/>
+        <!-- 6 -->
+        <path class="hc" style="--d:.65s" d="M143,9 C135,6 125,13 123,24 C121,35 127,43 135,43 C143,42 147,36 147,29 C147,22 142,18 136,20 C130,23 128,29 131,33"/>
+        <!-- 1 -->
+        <path class="hc" style="--d:.82s" d="M155,18 C158,13 163,7 163,7 C163,17 163,30 163,40"/>
+        <!-- A -->
+        <path class="hc" style="--d:.93s" d="M175,40 C179,28 186,15 192,7 C198,15 205,28 209,40"/>
+        <path class="hc" style="--d:1.04s" d="M182,28 C188,27 196,27 202,28"/>
+        <!-- 0 -->
+        <path class="hc" style="--d:1.14s" d="M232,6 C225,8 220,15 219,24 C218,34 223,43 232,43 C241,42 245,33 245,24 C245,14 240,5 232,8"/>
+      </svg>
+    </a>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="#">Blog</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-btn" title="RSS">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/>
+          </svg>
+        </button>
+        <button class="header-btn" id="theme-toggle" title="Toggle theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="home-hero fade-up">
+    <h1 class="home-title">你好，我是 <em>0x1461A0</em></h1>
+    <p class="home-bio">
+      AI Agent 全栈开发工程师，TypeScript / Node.js / Python。
+    </p>
+    <div class="home-links">
+      <a href="#" class="home-link-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <a href="#" class="home-link-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53A4.48 4.48 0 0 0 22.43.36a9 9 0 0 1-2.83 1.1A4.52 4.52 0 0 0 12 4.77v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+        Twitter
+      </a>
+      <a href="#" class="home-link-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">&copy; 2022 – PRESENT 0x1461A0</span>
+    </div>
+  </footer>
+</main>
+
+
+<!-- ============================================================ -->
+<!--  PAGE 2: BLOG LIST  ·  博客列表                               -->
+<!-- ============================================================ -->
+<div class="mockup-label"><span>Page 2 · Blog List · 博客列表</span></div>
+
+<header class="site-header container">
+  <div class="header-inner">
+    <a href="#" class="logo-group" aria-label="0x1461A0">
+      <svg class="logo-svg" viewBox="0 0 248 48" fill="none">
+        <!-- 0 -->
+        <path class="hc" style="--d:0s" d="M16,6 C9,8 4,15 3,24 C2,34 7,43 16,43 C25,42 29,33 29,24 C29,14 24,5 16,8"/>
+        <!-- x -->
+        <path class="hc" style="--d:.13s" d="M37,13 C41,19 49,31 55,37"/>
+        <path class="hc" style="--d:.22s" d="M55,13 C51,19 43,31 37,37"/>
+        <!-- 1 -->
+        <path class="hc" style="--d:.31s" d="M64,18 C67,13 72,7 72,7 C72,17 72,30 72,40"/>
+        <!-- 4 -->
+        <path class="hc" style="--d:.43s" d="M87,7 C87,14 86,22 86,28 C92,28 100,28 108,28"/>
+        <path class="hc" style="--d:.54s" d="M103,12 C103,20 103,30 103,40"/>
+        <!-- 6 -->
+        <path class="hc" style="--d:.65s" d="M143,9 C135,6 125,13 123,24 C121,35 127,43 135,43 C143,42 147,36 147,29 C147,22 142,18 136,20 C130,23 128,29 131,33"/>
+        <!-- 1 -->
+        <path class="hc" style="--d:.82s" d="M155,18 C158,13 163,7 163,7 C163,17 163,30 163,40"/>
+        <!-- A -->
+        <path class="hc" style="--d:.93s" d="M175,40 C179,28 186,15 192,7 C198,15 205,28 209,40"/>
+        <path class="hc" style="--d:1.04s" d="M182,28 C188,27 196,27 202,28"/>
+        <!-- 0 -->
+        <path class="hc" style="--d:1.14s" d="M232,6 C225,8 220,15 219,24 C218,34 223,43 232,43 C241,42 245,33 245,24 C245,14 240,5 232,8"/>
+      </svg>
+    </a>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="#" class="active">Blog</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-btn" title="RSS">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </button>
+        <button class="header-btn theme-toggle-extra" title="Toggle theme">
+          <svg class="sun-icon-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="moon-icon-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container" style="padding-top: 100px;">
+  <!-- 2025 -->
+  <div class="year-group">
+    <div class="year-label">2025</div>
+    <ul class="post-list">
+      <li><a href="#" class="post-link">
+        <span class="post-title">深入理解 JavaScript 闭包与作用域链</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">JavaScript</span></div>
+          <span class="post-date">03-15</span>
+        </div>
+      </a></li>
+      <li><a href="#" class="post-link">
+        <span class="post-title">React 19 新特性全面解析</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">React</span></div>
+          <span class="post-date">02-20</span>
+        </div>
+      </a></li>
+      <li><a href="#" class="post-link">
+        <span class="post-title">TypeScript 高级类型体操实战</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">TypeScript</span></div>
+          <span class="post-date">01-10</span>
+        </div>
+      </a></li>
+    </ul>
+  </div>
+
+  <!-- 2024 -->
+  <div class="year-group">
+    <div class="year-label">2024</div>
+    <ul class="post-list">
+      <li><a href="#" class="post-link">
+        <span class="post-title">CSS Grid 布局完全指南</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">CSS</span></div>
+          <span class="post-date">12-05</span>
+        </div>
+      </a></li>
+      <li><a href="#" class="post-link">
+        <span class="post-title">构建高性能 REST API 的最佳实践</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">Backend</span></div>
+          <span class="post-date">11-18</span>
+        </div>
+      </a></li>
+      <li><a href="#" class="post-link">
+        <span class="post-title">使用 Astro 构建现代静态网站</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">Astro</span></div>
+          <span class="post-date">10-22</span>
+        </div>
+      </a></li>
+      <li><a href="#" class="post-link">
+        <span class="post-title">Git 工作流与团队协作指南</span>
+        <div class="post-meta">
+          <div class="post-tags"><span class="tag">DevOps</span></div>
+          <span class="post-date">09-15</span>
+        </div>
+      </a></li>
+    </ul>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">&copy; 2022 – PRESENT 0x1461A0</span>
+    </div>
+  </footer>
+</main>
+
+
+<!-- ============================================================ -->
+<!--  PAGE 3: POST DETAIL  ·  文章详情                             -->
+<!-- ============================================================ -->
+<div class="mockup-label"><span>Page 3 · Post Detail · 文章详情</span></div>
+
+<header class="site-header container">
+  <div class="header-inner">
+    <a href="#" class="logo-group" aria-label="0x1461A0">
+      <svg class="logo-svg" viewBox="0 0 248 48" fill="none">
+        <!-- 0 -->
+        <path class="hc" style="--d:0s" d="M16,6 C9,8 4,15 3,24 C2,34 7,43 16,43 C25,42 29,33 29,24 C29,14 24,5 16,8"/>
+        <!-- x -->
+        <path class="hc" style="--d:.13s" d="M37,13 C41,19 49,31 55,37"/>
+        <path class="hc" style="--d:.22s" d="M55,13 C51,19 43,31 37,37"/>
+        <!-- 1 -->
+        <path class="hc" style="--d:.31s" d="M64,18 C67,13 72,7 72,7 C72,17 72,30 72,40"/>
+        <!-- 4 -->
+        <path class="hc" style="--d:.43s" d="M87,7 C87,14 86,22 86,28 C92,28 100,28 108,28"/>
+        <path class="hc" style="--d:.54s" d="M103,12 C103,20 103,30 103,40"/>
+        <!-- 6 -->
+        <path class="hc" style="--d:.65s" d="M143,9 C135,6 125,13 123,24 C121,35 127,43 135,43 C143,42 147,36 147,29 C147,22 142,18 136,20 C130,23 128,29 131,33"/>
+        <!-- 1 -->
+        <path class="hc" style="--d:.82s" d="M155,18 C158,13 163,7 163,7 C163,17 163,30 163,40"/>
+        <!-- A -->
+        <path class="hc" style="--d:.93s" d="M175,40 C179,28 186,15 192,7 C198,15 205,28 209,40"/>
+        <path class="hc" style="--d:1.04s" d="M182,28 C188,27 196,27 202,28"/>
+        <!-- 0 -->
+        <path class="hc" style="--d:1.14s" d="M232,6 C225,8 220,15 219,24 C218,34 223,43 232,43 C241,42 245,33 245,24 C245,14 240,5 232,8"/>
+      </svg>
+    </a>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="#">Blog</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-btn" title="RSS">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </button>
+        <button class="header-btn theme-toggle-extra" title="Toggle theme">
+          <svg class="sun-icon-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <svg class="moon-icon-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container" style="position: relative;">
+  <!-- Floating TOC -->
+  <nav class="toc-float">
+    <ul>
+      <li><a href="#" class="active">什么是闭包</a></li>
+      <li><a href="#">作用域链</a></li>
+      <li class="indent"><a href="#">词法作用域</a></li>
+      <li class="indent"><a href="#">作用域链查找</a></li>
+      <li><a href="#">实际应用</a></li>
+      <li><a href="#">常见陷阱</a></li>
+    </ul>
+  </nav>
+
+  <div class="article-header">
+    <h1 class="article-title">深入理解 JavaScript 闭包与作用域链</h1>
+    <div class="article-meta-bar">
+      <span class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        2025-03-15
+      </span>
+      <span class="meta-dot"></span>
+      <span class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        约 8 分钟
+      </span>
+      <span class="meta-dot"></span>
+      <span class="meta-item">
+        <div class="post-tags" style="margin:0"><span class="tag">JavaScript</span></div>
+      </span>
+    </div>
+  </div>
+
+  <article class="article-body">
+    <p>闭包（Closure）是 JavaScript 中最基础也是最强大的概念之一。理解闭包不仅能帮助我们写出更优雅的代码，还能让我们深入理解 JavaScript 的运行机制。</p>
+
+    <h2>什么是闭包</h2>
+    <p>简单来说，<strong>闭包是指一个函数能够记住并访问它的词法作用域，即使这个函数在其词法作用域之外执行</strong>。这意味着内部函数始终可以访问外部函数的变量，即使外部函数已经返回。</p>
+    <p>让我们通过一个经典的例子来理解：</p>
+
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang-label">javascript</span>
+        <button class="code-block-copy-btn" title="Copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <pre><code><span class="code-kw">function</span> <span class="code-fn">createCounter</span>() {
+  <span class="code-kw">let</span> count = <span class="code-num">0</span>;
+
+  <span class="code-kw">return</span> {
+    <span class="code-fn">increment</span>() {
+      count++;
+      <span class="code-kw">return</span> count;
+    },
+    <span class="code-fn">getCount</span>() {
+      <span class="code-kw">return</span> count;
+    }
+  };
+}
+
+<span class="code-kw">const</span> counter = <span class="code-fn">createCounter</span>();
+counter.<span class="code-fn">increment</span>(); <span class="code-cmt">// 1</span>
+counter.<span class="code-fn">increment</span>(); <span class="code-cmt">// 2</span>
+counter.<span class="code-fn">getCount</span>(); <span class="code-cmt">// 2</span></code></pre>
+    </div>
+
+    <p>在这个例子中，<code>increment</code> 和 <code>getCount</code> 方法形成了闭包。它们引用了外部函数 <code>createCounter</code> 中的变量 <code>count</code>，即使 <code>createCounter</code> 已经执行完毕，<code>count</code> 变量依然存在于内存中。</p>
+
+    <h2>作用域链</h2>
+    <p>要深入理解闭包的原理，我们需要先理解 JavaScript 的作用域链机制。每个执行上下文都有一个与之关联的<strong>变量对象</strong>，当前上下文中定义的所有变量和函数都会被添加到这个对象上。</p>
+
+    <h3>词法作用域</h3>
+    <p>JavaScript 使用<strong>词法作用域</strong>（也叫静态作用域），这意味着函数的作用域在函数定义时就已经确定，而不是在函数调用时确定。这是闭包能够工作的根本原因。</p>
+
+    <blockquote>
+      <p>词法作用域意味着代码在编写时的结构决定了变量的可访问性，而非运行时的调用位置。</p>
+    </blockquote>
+
+    <h3>作用域链查找</h3>
+    <p>当代码在一个环境中执行时，如果需要访问一个变量，引擎会首先在当前作用域中查找。如果没找到，就会沿着作用域链向外层查找，直到全局作用域。</p>
+
+    <h2>实际应用</h2>
+    <p>闭包在实际开发中有许多应用场景：</p>
+    <ul>
+      <li><strong>数据封装</strong>：模拟私有变量，隐藏实现细节</li>
+      <li><strong>函数工厂</strong>：创建特定配置的函数</li>
+      <li><strong>回调与事件处理</strong>：在异步操作中保持对外部变量的引用</li>
+      <li><strong>柯里化</strong>：将多参数函数转换为一系列单参数函数</li>
+    </ul>
+
+    <h2>常见陷阱</h2>
+    <p>在使用闭包时，最常见的问题就是循环中的闭包。由于 <code>var</code> 声明的变量没有块级作用域，在循环中创建的闭包会共享同一个变量引用。使用 <code>let</code> 关键字或者立即执行函数（IIFE）可以解决这个问题。</p>
+
+    <div class="code-block">
+      <div class="code-block-header">
+        <span class="code-block-lang-label">javascript</span>
+        <button class="code-block-copy-btn" title="Copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <pre><code><span class="code-cmt">// ✅ 使用 let 解决循环闭包问题</span>
+<span class="code-kw">for</span> (<span class="code-kw">let</span> i = <span class="code-num">0</span>; i < <span class="code-num">5</span>; i++) {
+  <span class="code-fn">setTimeout</span>(() => {
+    console.<span class="code-fn">log</span>(i); <span class="code-cmt">// 0, 1, 2, 3, 4</span>
+  }, i * <span class="code-num">1000</span>);
+}</code></pre>
+    </div>
+
+    <p>掌握闭包与作用域链的概念，是成为 JavaScript 高级开发者的必经之路。建议结合 V8 引擎的实现来加深理解，观察闭包在内存中的真实表现。</p>
+  </article>
+
+  <footer class="site-footer" style="margin-top: 0;">
+    <div class="footer-inner">
+      <span class="footer-copy">&copy; 2022 – PRESENT 0x1461A0</span>
+    </div>
+  </footer>
+</div>
+
+<div style="height: 60px;"></div>
+
+<!-- Font Switcher -->
+<div class="font-switcher">
+  <div class="font-switcher-title">Heading Font</div>
+  <ul class="font-switcher-list">
+    <li><button class="active" data-font="'Newsreader', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'Newsreader',serif">Newsreader</span><span class="fs-style">Transitional</span></button></li>
+    <li><button data-font="'Lora', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'Lora',serif">Lora</span><span class="fs-style">Calligraphic</span></button></li>
+    <li><button data-font="'Playfair Display', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'Playfair Display',serif">Playfair Display</span><span class="fs-style">High Contrast</span></button></li>
+    <li><button data-font="'Libre Baskerville', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'Libre Baskerville',serif">Libre Baskerville</span><span class="fs-style">Classic</span></button></li>
+    <li><button data-font="'DM Serif Display', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'DM Serif Display',serif">DM Serif Display</span><span class="fs-style">Modern Sharp</span></button></li>
+    <li><button data-font="'Fraunces', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'Fraunces',serif">Fraunces</span><span class="fs-style">Soft Wonky</span></button></li>
+    <li><button data-font="'Source Serif 4', 'Noto Serif SC', serif"><span class="fs-label" style="font-family:'Source Serif 4',serif">Source Serif 4</span><span class="fs-style">Clean Neutral</span></button></li>
+    <li><button data-font="'Inter', 'Noto Sans SC', sans-serif"><span class="fs-label" style="font-family:'Inter',sans-serif">Inter</span><span class="fs-style">Sans-serif</span></button></li>
+  </ul>
+</div>
+
+<script>
+  // Theme toggle — syncs all toggle buttons
+  function applyTheme(isDark) {
+    document.documentElement.classList.toggle('dark', isDark);
+    document.querySelectorAll('.sun-icon, [class^="sun-icon-"]').forEach(el => el.style.display = isDark ? 'none' : 'block');
+    document.querySelectorAll('.moon-icon, [class^="moon-icon-"]').forEach(el => el.style.display = isDark ? 'block' : 'none');
+  }
+
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(prefersDark);
+
+  document.querySelectorAll('#theme-toggle, .theme-toggle-extra').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isDark = !document.documentElement.classList.contains('dark');
+      applyTheme(isDark);
+    });
+  });
+
+  // Font switcher
+  document.querySelectorAll('.font-switcher-list button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const font = btn.dataset.font;
+      document.documentElement.style.setProperty('--font-heading', font);
+      document.querySelectorAll('.font-switcher-list button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

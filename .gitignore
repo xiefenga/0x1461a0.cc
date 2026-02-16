@@ -1,8 +1,3 @@
-# build output
-dist/
-# generated types
-.astro/
-
 # dependencies
 node_modules/
 
@@ -16,6 +11,9 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+
+# turborepo
+.turbo/
 
 # macOS-specific files
 .DS_Store
