@@ -1,0 +1,29 @@
+{
+  "name": "@0x1461a0/0xmd-cli",
+  "version": "0.2.0",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "0xmd": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@0x1461a0/0xmd-core": "workspace:*",
+    "citty": "^0.1.6",
+    "consola": "^3.4.2",
+    "yaml": "^2.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3"
+  }
+}

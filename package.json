@@ -1,12 +1,14 @@
 {
-  "name": "@0x1461a0.cc/monorepo",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.29.3",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "build:cms:core": "pnpm --filter @0x1461a0/0xmd-core build",
     "preview": "turbo run preview",
+    "test": "turbo run test",
+    "release": "bash scripts/release.sh",
     "prepare": "husky"
   },
   "devDependencies": {

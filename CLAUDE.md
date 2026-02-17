@@ -27,3 +27,8 @@
 - 文件名使用 kebab-case
 - 包管理器为 **pnpm**
 - Monorepo scope 为 `@0x1461a0.cc`
+
+## TypeScript 代码规范
+
+- **箭头函数导出**：所有 `export function` 必须写成 `export const fn = () => {}` 箭头函数形式
+- **强制花括号**：`if`、`else`、`while`、`for` 等分支/循环结构，即使只有单行逻辑也必须使用 `{}` 包裹，禁止 non-block 写法
