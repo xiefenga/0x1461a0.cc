@@ -13,7 +13,7 @@ const loadRendererURL = (win: BrowserWindow, query: string): void => {
   if (process.env["ELECTRON_RENDERER_URL"]) {
     win.loadURL(`${process.env["ELECTRON_RENDERER_URL"]}?view=${query}`);
   } else {
-    win.loadFile(join(__dirname, "../renderer/index.html"), {
+    win.loadFile(join(import.meta.dirname, "../renderer/index.html"), {
       query: { view: query },
     });
   }
@@ -36,7 +36,7 @@ export const createPopover = (): BrowserWindow => {
     hasShadow: true,
     vibrancy: "popover",
     webPreferences: {
-      preload: join(__dirname, "../preload/index.mjs"),
+      preload: join(import.meta.dirname, "../preload/index.mjs"),
       sandbox: false,
     },
   });
@@ -104,7 +104,7 @@ export const createWindow = (): BrowserWindow => {
     titleBarStyle: "hiddenInset",
     trafficLightPosition: { x: 16, y: 16 },
     webPreferences: {
-      preload: join(__dirname, "../preload/index.mjs"),
+      preload: join(import.meta.dirname, "../preload/index.mjs"),
       sandbox: false,
     },
   });

@@ -1,12 +1,15 @@
 {
   "name": "@0x1461a0.cc/0xmd-gui",
   "version": "0.1.0",
+  "description": "Local-first Markdown publishing app for 0xmd",
+  "author": "xiefeng",
   "private": true,
   "type": "module",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
+    "pack:mac": "electron-builder --mac dir --arm64",
     "preview": "electron-vite preview",
     "typecheck": "tsc -p tsconfig.node.json --noEmit --composite false --pretty false && tsc -p tsconfig.web.json --noEmit --composite false --pretty false"
   },

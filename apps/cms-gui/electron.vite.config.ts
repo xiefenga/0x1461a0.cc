@@ -5,7 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    // Bundle main-process dependencies so the packaged app is self-contained.
+    // electron-builder can otherwise omit pnpm workspace transitive dependencies.
     build: {
       rollupOptions: {
         input: {

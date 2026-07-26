@@ -20,6 +20,11 @@
       "persistent": true,
       "cache": false
     },
+    "pack:mac": {
+      "dependsOn": ["build"],
+      "outputs": ["release/**"],
+      "cache": false
+    },
     "test": {
       "dependsOn": ["build"],
       "cache": false

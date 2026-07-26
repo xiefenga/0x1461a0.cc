@@ -5,7 +5,10 @@ import { createPopover, togglePopover } from "./windows";
 let tray: Tray | null = null;
 
 export const createTray = (): Tray => {
-  const iconPath = join(__dirname, "../../resources/iconTemplate.png");
+  const iconPath = join(
+    import.meta.dirname,
+    "../../resources/iconTemplate.png",
+  );
   const icon = nativeImage.createFromPath(iconPath);
   icon.setTemplateImage(true);
 

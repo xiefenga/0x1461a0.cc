@@ -1,0 +1,26 @@
+appId: cc.0x1461a0.0xmd
+productName: 0xmd
+asar: true
+
+directories:
+  output: release
+
+files:
+  - out/**/*
+  - resources/**/*
+
+npmRebuild: false
+
+electronDownload:
+  mirror: https://npmmirror.com/mirrors/electron/
+
+mac:
+  category: public.app-category.productivity
+  icon: resources/appIcon.png
+  identity: "-"
+  extendInfo:
+    LSUIElement: true
+  target:
+    - target: dir
+      arch:
+        - arm64
