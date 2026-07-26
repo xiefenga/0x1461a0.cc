@@ -49,6 +49,23 @@ git:
     const config = await loadConfig(configPath);
     expect(config.git.branch).toBe("main");
     expect(config.patterns).toEqual(["**/*.md"]);
+    expect(config.frontmatter).toBeUndefined();
+  });
+
+  it("loads the transitional source frontmatter policy", async () => {
+    const configPath = join(tmpDir, "config.yml");
+    await writeFile(
+      configPath,
+      `contentDir: /tmp/content
+git:
+  remote: git@github.com:user/repo.git
+frontmatter:
+  policy: preserve
+`
+    );
+
+    const config = await loadConfig(configPath);
+    expect(config.frontmatter?.policy).toBe("preserve");
   });
 
   it("throws if config file does not exist", async () => {

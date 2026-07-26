@@ -3,22 +3,33 @@ import type {
   ValidationError,
   ValidationResult,
 } from "../types";
+import { MetadataEntrySchema } from "../schemas";
+import { hasFrontmatter } from "../utils/markdown";
 
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export const validateEntities = (entities: ContentEntity[]): ValidationResult => {
+export interface ValidationOptions {
+  allowSourceFrontmatter?: boolean;
+}
+
+export const validateEntities = (
+  entities: ContentEntity[],
+  options: ValidationOptions = {}
+): ValidationResult => {
   const errors: ValidationError[] = [];
   const seenIds = new Map<string, string>(); // id -> path
   const seenSlugs = new Map<string, string>(); // slug -> path
 
   for (const entity of entities) {
-    // Required: title
-    if (!entity.metadata.title) {
-      errors.push({
-        entityId: entity.id,
-        field: "title",
-        message: "Title is required",
-      });
+    const metadataResult = MetadataEntrySchema.safeParse(entity.metadata);
+    if (!metadataResult.success) {
+      for (const issue of metadataResult.error.issues) {
+        errors.push({
+          entityId: entity.id,
+          field: issue.path.join(".") || "metadata",
+          message: issue.message,
+        });
+      }
     }
 
     // Duplicate id
@@ -50,19 +61,12 @@ export const validateEntities = (entities: ContentEntity[]): ValidationResult =>
       });
     }
 
-    // Valid dates
-    if (entity.metadata.created && isNaN(Date.parse(entity.metadata.created))) {
+    if (!options.allowSourceFrontmatter && hasFrontmatter(entity.body)) {
       errors.push({
         entityId: entity.id,
-        field: "created",
-        message: `Invalid date "${entity.metadata.created}"`,
-      });
-    }
-    if (entity.metadata.updated && isNaN(Date.parse(entity.metadata.updated))) {
-      errors.push({
-        entityId: entity.id,
-        field: "updated",
-        message: `Invalid date "${entity.metadata.updated}"`,
+        field: "body",
+        message:
+          "Frontmatter is managed by 0xmd metadata and must not be present in source Markdown",
       });
     }
   }

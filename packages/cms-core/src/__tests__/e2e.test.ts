@@ -78,7 +78,10 @@ describe("e2e workflow", () => {
     expect(cs4.added).toHaveLength(0);
     expect(cs4.updated).toHaveLength(0);
     expect(cs4.removed).toHaveLength(1);
-    expect(cs4.removed[0].id).toContain("post");
+    expect(cs4.removed[0]).toEqual({
+      id: "post-b",
+      path: "post-b.md",
+    });
 
     // 12. Build index
     const index = await cm.rebuildIndex();

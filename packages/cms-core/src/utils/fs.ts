@@ -1,4 +1,5 @@
-import { readFile, writeFile, rename, mkdir } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { readFile, writeFile, rename, mkdir, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname } from "node:path";
 
@@ -13,9 +14,13 @@ export const atomicWrite = async (
   data: string
 ): Promise<void> => {
   await ensureDir(dirname(filePath));
-  const tmpPath = filePath + ".tmp";
-  await writeFile(tmpPath, data, "utf-8");
-  await rename(tmpPath, filePath);
+  const tmpPath = `${filePath}.tmp-${process.pid}-${randomUUID()}`;
+  try {
+    await writeFile(tmpPath, data, "utf-8");
+    await rename(tmpPath, filePath);
+  } finally {
+    await rm(tmpPath, { force: true });
+  }
 };
 
 export const readJsonFile = async <T>(filePath: string): Promise<T | null> => {

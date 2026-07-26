@@ -124,7 +124,11 @@ git:
   branch: main
 patterns:
   - "**/*.md"
+frontmatter:
+  policy: forbid # 迁移旧内容时可暂设 preserve
 ```
+
+`frontmatter.policy: preserve` 是迁移期兼容策略：允许源文件暂时携带 frontmatter，并在发布副本中原样保留，避免重复注入。默认 `forbid`，纯 Markdown 主链路不变。
 
 ## 3.2 Content Directory
 
@@ -357,6 +361,16 @@ class ContentManager {
 }
 ```
 
+CLI 与 GUI 不直接重复编排以上方法，而是共用 `CmsService` 应用服务：
+
+```ts
+class CmsService {
+  inspect(): Promise<WorkspaceSnapshot> // scan + diff + validate
+  updateMetadata(path, patch): Promise<WorkspaceSnapshot>
+  publish(options?): Promise<PublishOutcome> // validate + Git + manifest/index
+}
+```
+
 ---
 
 # 9. CLI Commands
@@ -395,6 +409,10 @@ class ContentManager {
 扫描内容目录，检测新文件，生成初始 metadata。
 
 输出每个实体的 id、path、slug、title、tags。
+
+### `0xmd metadata <path>`
+
+通过 `--title`、`--slug`、`--tags`、`--description` 更新 `.0xmd/metadata.json`，不改写 Markdown 源文件。
 
 ### `0xmd diff`
 

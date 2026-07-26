@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { createContentManager, handleError } from "../utils";
+import { createCmsService, handleError } from "../utils";
 
 export default defineCommand({
   meta: {
@@ -9,8 +9,8 @@ export default defineCommand({
   },
   run: async () => {
     try {
-      const cm = await createContentManager();
-      await cm.resetManifest();
+      const service = await createCmsService();
+      await service.resetManifest();
       consola.success("Manifest has been reset.");
     } catch (error) {
       handleError(error);

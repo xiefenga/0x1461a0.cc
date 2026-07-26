@@ -1,7 +1,7 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { loadConfig, ContentManager, GitAdapter } from "@0x1461a0/0xmd-core";
-import { handleError } from "../utils";
+import { ContentValidationError } from "@0x1461a0/0xmd-core";
+import { createCmsService, handleError } from "../utils";
 
 export default defineCommand({
   meta: {
@@ -23,23 +23,13 @@ export default defineCommand({
   },
   run: async ({ args }) => {
     try {
-      const config = await loadConfig();
-      const cm = new ContentManager(config);
-      await cm.init();
-      await cm.scan();
+      const service = await createCmsService();
+      const snapshot = await service.inspect();
+      const cs = snapshot.changeSet;
 
-      // Validate first
-      const validation = cm.validate();
-      if (!validation.valid) {
-        consola.error(`Validation failed with ${validation.errors.length} error(s):`);
-        for (const err of validation.errors) {
-          consola.error(`  [${err.entityId}] ${err.field}: ${err.message}`);
-        }
-        process.exit(1);
+      if (!snapshot.validation.valid) {
+        throw new ContentValidationError(snapshot);
       }
-
-      // Compute changeset
-      const cs = await cm.getChangeSet();
 
       if (
         cs.added.length === 0 &&
@@ -64,6 +54,7 @@ export default defineCommand({
 
       // Dry run
       if (args["dry-run"]) {
+        await service.publish({ dryRun: true });
         consola.info("\nDry run — no changes were published.");
         return;
       }
@@ -80,11 +71,9 @@ export default defineCommand({
         }
       }
 
-      // Publish
-      const adapter = new GitAdapter(config);
-      const result = await adapter.publish(cs, cm.getEntities());
+      const { result } = await service.publish();
 
-      if (result.success) {
+      if (result?.success) {
         consola.success(
           `Published: ${result.published} written, ${result.removed} removed.`
         );
@@ -92,15 +81,21 @@ export default defineCommand({
           consola.info(`  Commit: ${result.commitHash}`);
         }
 
-        // Update manifest after successful publish
-        await cm.updateManifest();
-        await cm.rebuildIndex();
         consola.success("Manifest and index updated.");
       } else {
-        consola.error("Publish failed:", result.message);
+        consola.error("Publish failed:", result?.message);
         process.exit(1);
       }
     } catch (error) {
+      if (error instanceof ContentValidationError) {
+        consola.error(error.message);
+        for (const validationError of error.snapshot.validation.errors) {
+          consola.error(
+            `  [${validationError.entityId}] ${validationError.field}: ${validationError.message}`
+          );
+        }
+        process.exit(1);
+      }
       handleError(error);
     }
   },

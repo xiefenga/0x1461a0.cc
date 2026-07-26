@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { createContentManager, handleError } from "../utils";
+import { createCmsService, handleError } from "../utils";
 
 export default defineCommand({
   meta: {
@@ -9,9 +9,8 @@ export default defineCommand({
   },
   run: async () => {
     try {
-      const cm = await createContentManager();
-      await cm.scan();
-      const index = await cm.rebuildIndex();
+      const service = await createCmsService();
+      const index = await service.rebuildIndex();
 
       const count = Object.keys(index.byId).length;
       consola.success(`Index rebuilt with ${count} entries.`);

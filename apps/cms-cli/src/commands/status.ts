@@ -27,6 +27,9 @@ export default defineCommand({
       consola.info(`Git remote:  ${config.git.remote}`);
       consola.info(`Git branch:  ${config.git.branch}`);
       consola.info(`Patterns:    ${config.patterns.join(", ")}`);
+      consola.info(
+        `Frontmatter: ${config.frontmatter?.policy ?? "forbid"}`
+      );
 
       // Data dir
       const dataDir = getDataDir(config.contentDir);

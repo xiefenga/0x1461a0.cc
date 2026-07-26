@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { createContentManager, handleError } from "../utils";
+import { createCmsService, handleError } from "../utils";
 
 export default defineCommand({
   meta: {
@@ -9,8 +9,8 @@ export default defineCommand({
   },
   run: async () => {
     try {
-      const cm = await createContentManager();
-      const entities = await cm.scan();
+      const service = await createCmsService();
+      const { entities } = await service.inspect();
 
       if (entities.length === 0) {
         consola.info("No content files found.");

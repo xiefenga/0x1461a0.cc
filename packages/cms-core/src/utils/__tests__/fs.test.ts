@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdtemp, rm, readFile } from "node:fs/promises";
+import { mkdtemp, rm, readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -40,7 +40,9 @@ describe("fs utils", () => {
     it("does not leave .tmp file behind", async () => {
       const filePath = join(tmpDir, "test.txt");
       await atomicWrite(filePath, "data");
-      expect(existsSync(filePath + ".tmp")).toBe(false);
+      expect(
+        (await readdir(tmpDir)).some((name) => name.includes(".tmp-"))
+      ).toBe(false);
     });
 
     it("creates parent directories", async () => {
@@ -48,6 +50,20 @@ describe("fs utils", () => {
       await atomicWrite(filePath, "nested data");
       const content = await readFile(filePath, "utf-8");
       expect(content).toBe("nested data");
+    });
+
+    it("supports concurrent writes without temporary-file collisions", async () => {
+      const filePath = join(tmpDir, "shared.json");
+      const values = ["first", "second", "third"];
+
+      await Promise.all(
+        values.map((value) => atomicWrite(filePath, value))
+      );
+
+      expect(values).toContain(await readFile(filePath, "utf-8"));
+      expect(
+        (await readdir(tmpDir)).some((name) => name.includes(".tmp-"))
+      ).toBe(false);
     });
   });
 

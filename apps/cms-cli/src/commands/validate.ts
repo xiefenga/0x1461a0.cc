@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { createContentManager, handleError } from "../utils";
+import { createCmsService, handleError } from "../utils";
 
 export default defineCommand({
   meta: {
@@ -9,9 +9,8 @@ export default defineCommand({
   },
   run: async () => {
     try {
-      const cm = await createContentManager();
-      await cm.scan();
-      const result = cm.validate();
+      const service = await createCmsService();
+      const { validation: result } = await service.inspect();
 
       if (result.valid) {
         consola.success("All content is valid.");

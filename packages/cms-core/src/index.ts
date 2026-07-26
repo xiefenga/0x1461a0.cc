@@ -8,6 +8,9 @@ export {
   type ChangeSet,
   type ValidationError,
   type ValidationResult,
+  type WorkspaceSnapshot,
+  type PublishOptions,
+  type PublishOutcome,
 } from "./types";
 
 // Schemas
@@ -20,7 +23,7 @@ export { loadConfig, getConfigPath, getDataDir } from "./config/loader";
 // Utils
 export { computeHash } from "./utils/hash";
 export { generateSlug, generateId } from "./utils/id";
-export { injectFrontmatter } from "./utils/markdown";
+export { hasFrontmatter, injectFrontmatter } from "./utils/markdown";
 export {
   atomicWrite,
   ensureDir,
@@ -33,12 +36,21 @@ export { ContentManager } from "./core/content-manager";
 export { scanContentDir, buildEntities } from "./core/scanner";
 export { computeChangeSet, findRemoved } from "./core/diff";
 export { buildIndex } from "./core/indexer";
-export { validateEntities } from "./core/validator";
+export {
+  validateEntities,
+  type ValidationOptions,
+} from "./core/validator";
 export {
   loadMetadata,
   saveMetadata,
   syncMetadata,
 } from "./core/metadata";
+
+// Application service
+export {
+  CmsService,
+  ContentValidationError,
+} from "./application/cms-service";
 
 // Storage
 export type { StorageAdapter, PublishResult } from "./storage/storage-adapter";

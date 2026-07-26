@@ -3,11 +3,9 @@ import BaseLayout from "~/layouts/base-layout.astro";
 
 import PostList from "~/components/post-list.astro";
 
-import { getCollection } from "astro:content";
+import { getBlogPosts, getPostSlug } from "~/lib/posts";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.created.valueOf() - a.data.created.valueOf()
-);
+const posts = await getBlogPosts();
 ---
 
 <BaseLayout>
@@ -34,7 +32,7 @@ const posts = (await getCollection("blog")).sort(
       <PostList
         class="min-h-[calc(100vh-276px)]"
         posts={posts.map((post) => ({
-          id: post.id,
+          slug: getPostSlug(post),
           title: post.data.title,
           created: post.data.created,
           updated: post.data.updated,

@@ -41,9 +41,20 @@ git:
 patterns:
   - "**/*.md"
   - "**/*.mdx"
+
+# 默认 forbid；旧内容过渡期可设为 preserve
+frontmatter:
+  policy: forbid
 ```
 
 `contentDir` 和 `cloneDir` 支持 `~` 路径。
+
+`frontmatter.policy`：
+
+- `forbid`（默认）— 源 Markdown 必须无 frontmatter，发布时从外置 metadata 注入。
+- `preserve` — 允许旧源文件保留已有 frontmatter，发布时原样保留，避免重复注入；无 frontmatter 的新文件仍正常注入外置 metadata。
+
+`preserve` 是迁移期兼容模式。旧文件已有 frontmatter 时，外置 metadata 的修改不会覆盖其中字段；完成迁移后应切回 `forbid`。
 
 ## 命令
 
@@ -59,7 +70,19 @@ patterns:
 #   ...
 ```
 
-首次扫描会在 `contentDir/.0xmd/metadata.json` 中为每个文件自动生成初始元数据（title 从文件名推导，created/updated 取文件修改时间）。后续可手动编辑该文件来设置 slug、tags、description 等。
+首次扫描会在 `contentDir/.0xmd/metadata.json` 中为每个文件自动生成初始元数据（title 从文件名推导，created/updated 取文件修改时间）。
+
+### `0xmd metadata`
+
+通过 CLI 修改外置元数据，不改写 Markdown 源文件。
+
+```bash
+0xmd metadata posts/hello.md \
+  --title "Hello" \
+  --slug hello \
+  --tags "cms,local-first" \
+  --description "Managed outside Markdown"
+```
 
 ### `0xmd diff`
 
@@ -78,7 +101,7 @@ patterns:
 
 ### `0xmd validate`
 
-校验所有内容的元数据：检查必填字段、重复 id/slug、日期格式、slug 格式等。
+校验所有内容的完整 metadata schema、重复 id/slug、日期、slug 格式，并拒绝源 Markdown 中的 frontmatter。
 
 ```bash
 0xmd validate
@@ -128,7 +151,8 @@ patterns:
 # 2. 扫描，自动生成元数据
 0xmd scan
 
-# 3. 编辑 contentDir/.0xmd/metadata.json，补充 tags、description 等
+# 3. 用 CLI 维护独立元数据
+0xmd metadata post.md --tags "cms,markdown" --description "..."
 
 # 4. 查看变更
 0xmd diff

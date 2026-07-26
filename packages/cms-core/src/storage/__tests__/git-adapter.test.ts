@@ -98,7 +98,10 @@ describe("GitAdapter", () => {
       id: "post",
       path: "post.md",
       body: "# Hello",
-      metadata: { title: "Hello" },
+      metadata: {
+        ...makeEntity().metadata,
+        title: "Hello",
+      },
     });
     const changeSet: ChangeSet = {
       added: [entity],
@@ -115,6 +118,30 @@ describe("GitAdapter", () => {
     expect(written).toContain("---");
     expect(written).toContain("title: Hello");
     expect(written).toContain("# Hello");
+  });
+
+  it("preserves existing source frontmatter without injecting a second block", async () => {
+    await mkdir(cloneDir, { recursive: true });
+    await mkdir(join(cloneDir, ".git"), { recursive: true });
+    config.frontmatter = { policy: "preserve" };
+
+    const body =
+      "---\ntitle: Legacy title\ncreated: 2023-06-11\n---\n\n# Legacy\n";
+    const entity = makeEntity({
+      id: "legacy",
+      path: "legacy.md",
+      body,
+    });
+    const adapter = new GitAdapter(config);
+
+    await adapter.publish(
+      { added: [entity], updated: [], removed: [] },
+      [entity]
+    );
+
+    const written = await readFile(join(cloneDir, "legacy.md"), "utf-8");
+    expect(written).toBe(body);
+    expect(written.match(/^---$/gm)).toHaveLength(2);
   });
 
   it("removes files for removed entries", async () => {
@@ -169,6 +196,25 @@ describe("GitAdapter", () => {
     expect(result.removed).toBe(0);
     expect(mockGit.commit).not.toHaveBeenCalled();
   });
+
+  it.each(["", "../outside.md", "/tmp/outside.md"])(
+    "rejects unsafe publish path %j",
+    async (path) => {
+      await mkdir(cloneDir, { recursive: true });
+      await mkdir(join(cloneDir, ".git"), { recursive: true });
+
+      const adapter = new GitAdapter(config);
+      const changeSet: ChangeSet = {
+        added: [],
+        updated: [],
+        removed: [{ id: "unsafe", path }],
+      };
+
+      await expect(adapter.publish(changeSet, [])).rejects.toThrow(
+        /Refusing to publish/
+      );
+    }
+  );
 });
 
 function makeEntity(
@@ -179,7 +225,14 @@ function makeEntity(
     slug: "test",
     path: "test.md",
     body: "body",
-    metadata: { title: "Test" },
+    metadata: {
+      title: "Test",
+      slug: "test",
+      tags: [],
+      description: "",
+      created: "2025-01-01T00:00:00Z",
+      updated: "2025-01-01T00:00:00Z",
+    },
     hash: "abc",
     ...overrides,
   };

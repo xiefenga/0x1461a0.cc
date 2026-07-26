@@ -22,11 +22,12 @@
 ```
 src/
   index.ts              # CLI 入口，注册所有子命令（citty runMain）
-  utils.ts              # createContentManager(), handleError()
+  utils.ts              # createCmsService(), handleError()
   commands/
     init.ts             # 交互式创建配置文件（~/.0xmd/0xmd.config.yml）
     status.ts           # 显示配置和内容状态概览
     scan.ts             # 扫描内容目录，显示文件列表和 metadata
+    metadata.ts         # 修改 .0xmd/metadata.json 中的外置元数据
     diff.ts             # 显示 ChangeSet（added/updated/removed）
     validate.ts         # 校验所有实体的 metadata
     build-index.ts      # 重建 index.json
@@ -37,8 +38,9 @@ src/
 ## 设计要点
 
 - 每个命令是独立的 `defineCommand()` 模块，通过 `subCommands` 注册到主命令
-- `createContentManager()` 封装了 loadConfig → new ContentManager → init 的固定流程
+- `createCmsService()` 封装了 loadConfig → new CmsService → init 的固定流程
+- scan / metadata / diff / validate / publish 与 GUI 共用 cms-core 的 `CmsService`
 - `handleError()` 统一错误处理，consola 输出后 exit(1)
-- publish 命令不使用 `createContentManager()`，因为它需要直接访问 config 来创建 GitAdapter
+- publish 由 `CmsService.publish()` 统一完成 validate → diff → GitAdapter → manifest/index
 - init 命令直接使用 yaml 库序列化配置，不依赖 cms-core 的 loadConfig；会检查 contentDir 是否存在并警告
 - status 命令兼容未初始化状态，逐步检测 config → dataDir → metadata/manifest/path-map/index

@@ -1,15 +1,27 @@
 import { join } from "node:path";
 
 import { buildIndex } from "./indexer";
-import { getDataDir } from '../config/loader';
+import { getDataDir } from "../config/loader";
 import { validateEntities } from "./validator";
 import { computeChangeSet, findRemoved } from "./diff";
-import { loadMetadata, syncMetadata } from "./metadata";
+import {
+  loadMetadata,
+  saveMetadata,
+  syncMetadata,
+} from "./metadata";
 import { scanContentDir, buildEntities } from "./scanner";
-import { readJsonFile, writeJsonFile, ensureDir } from '../utils/fs';
+import { readJsonFile, writeJsonFile, ensureDir } from "../utils/fs";
+import { MetadataEntrySchema } from "../schemas";
 
-import type { Config } from '../config/schema';
-import type { ContentEntity, ContentIndex, ChangeSet, Manifest, ValidationResult } from '../types';
+import type { Config } from "../config/schema";
+import type {
+  ChangeSet,
+  ContentEntity,
+  ContentIndex,
+  Manifest,
+  MetadataEntry,
+  ValidationResult,
+} from "../types";
 
 const MANIFEST_FILE = "manifest.json";
 const INDEX_FILE = "index.json";
@@ -39,13 +51,6 @@ export class ContentManager {
     const synced = await syncMetadata(this.dataDir, this.config.contentDir, files, store);
 
     this.entities = await buildEntities(this.config.contentDir, files, synced);
-
-    // Save id->path mapping for tracking removed files
-    const pathMap: Record<string, string> = {};
-    for (const e of this.entities) {
-      pathMap[e.id] = e.path;
-    }
-    await writeJsonFile(join(this.dataDir, PATH_MAP_FILE), pathMap);
 
     return this.entities;
   }
@@ -97,7 +102,40 @@ export class ContentManager {
   }
 
   validate(): ValidationResult {
-    return validateEntities(this.entities);
+    return validateEntities(this.entities, {
+      allowSourceFrontmatter:
+        this.config.frontmatter?.policy === "preserve",
+    });
+  }
+
+  async updateMetadata(
+    path: string,
+    patch: Partial<MetadataEntry>
+  ): Promise<ContentEntity> {
+    const store = await loadMetadata(this.dataDir);
+    const current = store[path];
+
+    if (!current) {
+      throw new Error(
+        `Metadata not found for "${path}". Run scan before editing metadata.`
+      );
+    }
+
+    const metadata = MetadataEntrySchema.parse({
+      ...current,
+      ...patch,
+      updated: patch.updated ?? new Date().toISOString(),
+    });
+
+    store[path] = metadata;
+    await saveMetadata(this.dataDir, store);
+    await this.scan();
+
+    const entity = this.entities.find((entry) => entry.path === path);
+    if (!entity) {
+      throw new Error(`Content file not found after metadata update: ${path}`);
+    }
+    return entity;
   }
 
   getEntities(): ContentEntity[] {

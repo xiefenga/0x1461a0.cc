@@ -1,11 +1,11 @@
-import { loadConfig, ContentManager } from "@0x1461a0/0xmd-core";
+import { CmsService, loadConfig } from "@0x1461a0/0xmd-core";
 import consola from "consola";
 
-export const createContentManager = async (): Promise<ContentManager> => {
+export const createCmsService = async (): Promise<CmsService> => {
   const config = await loadConfig();
-  const cm = new ContentManager(config);
-  await cm.init();
-  return cm;
+  const service = new CmsService(config);
+  await service.init();
+  return service;
 };
 
 export const handleError = (error: unknown): never => {

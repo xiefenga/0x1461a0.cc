@@ -3,7 +3,13 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".astro/**"],
+      "outputs": ["dist/**", ".astro/**", "out/**"],
+      "env": [
+        "CONTENT_LOADER_BASE",
+        "CONTENT_REPO_BRANCH",
+        "CONTENT_REPO_URL",
+        "SITE_TITLE"
+      ],
       "cache": false
     },
     "dev": {
@@ -17,6 +23,10 @@
     "test": {
       "dependsOn": ["build"],
       "cache": false
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
     }
   }
 }

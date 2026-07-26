@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 interface Props {
   posts: {
-    id: string;
+    slug: string;
     title: string;
     created: Date;
     updated: Date;
@@ -44,7 +44,7 @@ const sortedYears = Object.keys(postsByYear)
             <li>
               <a
                 class="group flex items-center justify-between gap-4 rounded-xl"
-                href={`/post/${post.id}/`}
+                href={`/post/${post.slug}/`}
               >
                 <span
                   title={post.title}

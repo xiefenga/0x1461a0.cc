@@ -1,6 +1,20 @@
 import { describe, it, expect } from "vitest";
 import { validateEntities } from "../validator";
-import type { ContentEntity } from "../../types";
+import type { ContentEntity, MetadataEntry } from "../../types";
+
+const makeMetadata = (
+  overrides: Partial<MetadataEntry> = {}
+): MetadataEntry => {
+  return {
+    title: "Test",
+    slug: "test",
+    tags: [],
+    description: "",
+    created: "2025-01-01T00:00:00Z",
+    updated: "2025-01-01T00:00:00Z",
+    ...overrides,
+  };
+};
 
 function makeEntity(overrides: Partial<ContentEntity> = {}): ContentEntity {
   return {
@@ -8,7 +22,7 @@ function makeEntity(overrides: Partial<ContentEntity> = {}): ContentEntity {
     slug: "test",
     path: "test.md",
     body: "body",
-    metadata: { title: "Test" },
+    metadata: makeMetadata(),
     hash: "abc",
     ...overrides,
   };
@@ -53,7 +67,7 @@ describe("validateEntities", () => {
   it("detects invalid dates", () => {
     const result = validateEntities([
       makeEntity({
-        metadata: { title: "Test", created: "not-a-date" },
+        metadata: makeMetadata({ created: "not-a-date" }),
       }),
     ]);
     expect(result.valid).toBe(false);
@@ -63,13 +77,32 @@ describe("validateEntities", () => {
   it("passes with valid dates", () => {
     const result = validateEntities([
       makeEntity({
-        metadata: {
-          title: "Test",
+        metadata: makeMetadata({
           created: "2025-01-01T00:00:00Z",
           updated: "2025-01-02T00:00:00Z",
-        },
+        }),
       }),
     ]);
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects frontmatter in source Markdown", () => {
+    const result = validateEntities([
+      makeEntity({ body: "---\ntitle: Inline\n---\n\n# Body" }),
+    ]);
+
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContainEqual(
+      expect.objectContaining({ field: "body" })
+    );
+  });
+
+  it("allows source frontmatter when transitional mode is enabled", () => {
+    const result = validateEntities(
+      [makeEntity({ body: "---\ntitle: Inline\n---\n\n# Body" })],
+      { allowSourceFrontmatter: true }
+    );
+
     expect(result.valid).toBe(true);
   });
 });

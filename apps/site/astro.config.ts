@@ -10,7 +10,7 @@ import { remarkSanitizeLinkHtml } from "./plugins/markdown/remark-sanitize-link-
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://example.com",
+  site: "https://www.0x1461a0.cc",
   output: "static",
   adapter: vercel(),
   integrations: [mdx(), sitemap(), react()],

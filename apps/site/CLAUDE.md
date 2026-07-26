@@ -5,7 +5,9 @@
 ## 命令
 
 - **开发服务器：** `pnpm dev`（监听 localhost:4321）
-- **构建：** `pnpm build`（`prebuild` 会从远程仓库克隆内容，需要 `$CONTENT_REPO_URL`）
+- **同步内容：** `pnpm sync-content`（安全克隆 `$CONTENT_REPO_URL`；缺失时保留本地 content）
+- **构建：** `pnpm build`（`prebuild` 会先执行安全内容同步）
+- **测试：** `pnpm test`（本地 Git 同步测试 + 0xmd 发布 frontmatter 渲染 E2E）
 - **预览：** `pnpm preview`
 - **Astro CLI：** `pnpm astro`
 
@@ -15,7 +17,7 @@ Astro 5 + TypeScript (strict) + React 19 + Tailwind CSS 4 + MDX
 
 ## 架构
 
-**内容系统：** 博客文章为 `content/` 下的 Markdown 文件。生产环境中 `prebuild` 从外部 git 仓库克隆内容，本地可能已存在内容文件。使用 Astro Content Collections（glob loader），配置在 `src/content.config.ts`。Frontmatter 字段：`title`（string）、`description`（可选 string）、`created`（date）、`updated`（date）。
+**内容系统：** 博客文章来自 0xmd 发布的 Git 内容仓库。站点不读取 `.0xmd/`，而是消费发布后带 frontmatter 的 Markdown。`prebuild` 先克隆到临时目录，成功后才替换 `content/`；未配置 remote 时保留本地内容。Astro Content Collections 使用 glob loader，schema 为 `title`、可选 `slug`、`tags`、`description`、`created`、`updated`。页面路由优先使用 metadata slug，旧内容回退到 loader id。
 
 **路径别名：** `~/*` 映射到 `./src/*`（配置在 `tsconfig.json`）。
 
@@ -37,6 +39,8 @@ Astro 5 + TypeScript (strict) + React 19 + Tailwind CSS 4 + MDX
 **环境变量**（服务端，定义在 `astro.config.ts` 的 `env.schema`）：
 - `SITE_TITLE` — 博客标题
 - `CONTENT_LOADER_BASE` — 内容目录路径
+- `CONTENT_REPO_URL` — 0xmd 发布的 Git 内容仓库，应与 0xmd `git.remote` 一致
+- `CONTENT_REPO_BRANCH` — 内容仓库分支，默认 `main`
 
 ## 约定
 

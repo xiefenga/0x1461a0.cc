@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import type { MetadataEntrySchema } from "./schemas";
+import type { PublishResult } from "./storage/storage-adapter";
 
 // --- Metadata ---
 
@@ -52,4 +53,22 @@ export interface ValidationError {
 export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
+}
+
+// --- Application service ---
+
+export interface WorkspaceSnapshot {
+  entities: ContentEntity[];
+  changeSet: ChangeSet;
+  validation: ValidationResult;
+}
+
+export interface PublishOptions {
+  dryRun?: boolean;
+}
+
+export interface PublishOutcome {
+  snapshot: WorkspaceSnapshot;
+  result?: PublishResult;
+  dryRun: boolean;
 }

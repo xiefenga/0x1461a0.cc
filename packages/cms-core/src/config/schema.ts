@@ -8,6 +8,11 @@ export const ConfigSchema = z.object({
     cloneDir: z.string().optional(),
   }),
   patterns: z.array(z.string()).default(["**/*.md"]),
+  frontmatter: z
+    .object({
+      policy: z.enum(["forbid", "preserve"]).default("forbid"),
+    })
+    .optional(),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

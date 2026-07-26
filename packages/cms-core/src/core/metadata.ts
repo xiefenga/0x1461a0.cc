@@ -40,20 +40,20 @@ export const syncMetadata = async (
 
   // Add entries for new files
   for (const relPath of diskFiles) {
-    if (!updated[relPath]) {
-      const absPath = join(contentDir, relPath);
-      let createdAt: string;
-      let updatedAt: string;
-      try {
-        const fileStat = await stat(absPath);
-        createdAt = fileStat.birthtime.toISOString();
-        updatedAt = fileStat.mtime.toISOString();
-      } catch {
-        const now = new Date().toISOString();
-        createdAt = now;
-        updatedAt = now;
-      }
+    const absPath = join(contentDir, relPath);
+    let createdAt: string;
+    let updatedAt: string;
+    try {
+      const fileStat = await stat(absPath);
+      createdAt = fileStat.birthtime.toISOString();
+      updatedAt = fileStat.mtime.toISOString();
+    } catch {
+      const now = new Date().toISOString();
+      createdAt = now;
+      updatedAt = now;
+    }
 
+    if (!updated[relPath]) {
       const title = titleFromFilename(relPath);
 
       updated[relPath] = {
@@ -63,6 +63,16 @@ export const syncMetadata = async (
         slug: slugify(title, { separator: "-" }),
         tags: [],
         description: "",
+      };
+      continue;
+    }
+
+    const currentUpdated = Date.parse(updated[relPath].updated);
+    const diskUpdated = Date.parse(updatedAt);
+    if (Number.isNaN(currentUpdated) || diskUpdated > currentUpdated) {
+      updated[relPath] = {
+        ...updated[relPath],
+        updated: updatedAt,
       };
     }
   }

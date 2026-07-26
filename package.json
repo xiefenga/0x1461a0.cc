@@ -6,6 +6,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "build:cms:core": "pnpm --filter @0x1461a0/0xmd-core build",
+    "typecheck": "turbo run typecheck",
     "preview": "turbo run preview",
     "test": "turbo run test",
     "release": "bash scripts/release.sh",
@@ -19,6 +20,9 @@
     "lint-staged": "^16.2.7",
     "turbo": "^2.8.9",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["electron"]
   },
   "volta": {
     "node": "24.13.1",

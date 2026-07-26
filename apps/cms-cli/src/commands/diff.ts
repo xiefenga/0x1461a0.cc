@@ -1,6 +1,6 @@
 import { defineCommand } from "citty";
 import consola from "consola";
-import { createContentManager, handleError } from "../utils";
+import { createCmsService, handleError } from "../utils";
 
 export default defineCommand({
   meta: {
@@ -9,9 +9,8 @@ export default defineCommand({
   },
   run: async () => {
     try {
-      const cm = await createContentManager();
-      await cm.scan();
-      const cs = await cm.getChangeSet();
+      const service = await createCmsService();
+      const { changeSet: cs } = await service.inspect();
 
       if (
         cs.added.length === 0 &&

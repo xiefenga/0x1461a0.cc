@@ -66,6 +66,14 @@ export default defineCommand({
         ? patternsInput.split(",").map((p) => p.trim()).filter(Boolean)
         : ["**/*.md"];
 
+      const preserveFrontmatter = await consola.prompt(
+        "Preserve frontmatter already present in source Markdown?",
+        {
+          type: "confirm",
+          default: false,
+        }
+      );
+
       const config = {
         contentDir,
         git: {
@@ -73,6 +81,9 @@ export default defineCommand({
           branch: (typeof branch === "string" && branch) ? branch : "main",
         },
         patterns,
+        frontmatter: {
+          policy: preserveFrontmatter ? "preserve" : "forbid",
+        },
       };
 
       await mkdir(dirname(configPath), { recursive: true });
