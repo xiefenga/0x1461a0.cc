@@ -1,8 +1,11 @@
 import { execFile } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import {
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -19,7 +22,9 @@ const SITE_DIR = join(
   "..",
   ".."
 );
-const ASTRO_CLI = join(SITE_DIR, "node_modules", "astro", "astro.js");
+const astroPackagePath = createRequire(import.meta.url).resolve("astro/package.json");
+const astroPackage = JSON.parse(readFileSync(astroPackagePath, "utf-8"));
+const ASTRO_CLI = join(dirname(astroPackagePath), astroPackage.bin.astro);
 
 describe("published 0xmd content contract", () => {
   let rootDir: string | undefined;
@@ -53,6 +58,39 @@ updated: 2026-07-26T09:00:00.000Z
 # Published body
 
 This body came from a pure local Markdown source.
+
+## Reading section
+
+### Nested section
+
+[你真的会用<a>标签吗？](https://example.org)
+
+\`\`\`typescript
+const answer = 42;
+\`\`\`
+
+| Name | Value |
+| --- | --- |
+| token | paper |
+`
+      );
+
+      await writeFile(
+        join(contentDir, "component.mdx"),
+        `---
+title: MDX Contract
+slug: mdx-route
+created: 2026-07-26T08:00:00.000Z
+updated: 2026-07-26T09:00:00.000Z
+---
+
+export const Highlight = ({ children }) => <mark>{children}</mark>;
+
+<Highlight>MDX still renders</Highlight>
+
+\`\`\`js
+const mdx = true;
+\`\`\`
 `
       );
 
@@ -78,6 +116,26 @@ This body came from a pure local Markdown source.
       expect(html).toContain(
         "Rendered from the 0xmd Git publishing contract"
       );
+
+      expect(html).toContain('aria-label="本文目录"');
+      expect(html).toContain('href="#reading-section"');
+      expect(html).toContain('href="#nested-section"');
+      expect(html).toContain("code-block-wrapper");
+      expect(html).toContain('aria-label="复制代码"');
+      expect(html).toContain("--shiki-dark");
+      expect(html).toMatch(/你真的会用(?:&lt;|&#x3C;)a(?:&gt;|>)标签吗？/);
+      expect(html).toContain("<table>");
+      expect(html).not.toContain("text-gray-");
+      const assets = await readdir(join(outputDir, "_astro"));
+      const styles = (await Promise.all(assets.filter((file) => file.endsWith(".css"))
+        .map((file) => readFile(join(outputDir, "_astro", file), "utf-8")))).join("\n");
+      expect(styles).toContain("--colors-paper:");
+      expect(styles).toContain("var(--colors-paper)");
+      expect(styles).not.toContain("token(");
+      const mdx = await readFile(join(outputDir, "post", "mdx-route", "index.html"), "utf-8");
+      expect(mdx).toContain("<mark>MDX still renders</mark>");
+      expect(mdx).toContain("code-block-wrapper");
+      expect(mdx).not.toContain('aria-label="本文目录"');
 
       const index = await readFile(join(outputDir, "index.html"), "utf-8");
       expect(index).toContain("/post/metadata-route/");

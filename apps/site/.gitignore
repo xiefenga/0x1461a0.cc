@@ -8,3 +8,6 @@ dist/
 # transactional content synchronization
 .content-sync-*/
 content.backup-*/
+
+# Panda generated styles and types
+styled-system/

@@ -1,6 +1,6 @@
 # @0x1461a0.cc/site
 
-Astro blog consuming the Git content repository published by 0xmd.
+Astro 7 + Panda CSS blog consuming the Git content repository published by 0xmd.
 
 ## Content contract
 
@@ -50,3 +50,17 @@ pnpm test
 
 Production deployment still needs an external trigger, such as a Vercel Deploy
 Hook invoked after the content repository receives an 0xmd push.
+
+## Styles and development
+
+`panda.config.ts` owns design tokens, themes, and text styles. `src/styles/ui.ts`
+owns shared layout and controls; `src/styles/global.css` handles generated Markdown
+with Panda generated CSS variable references. Install runs `panda codegen`; PostCSS extracts CSS
+from Astro/TypeScript during dev and build. `styled-system/` is generated and ignored.
+Run `pnpm typecheck` for Astro + Panda diagnostics. The CMS retains Tailwind and Vite 6.
+
+Fonts are self-hosted via Fontsource variable packages with CJK system fallbacks.
+Markdown/MDX retain the unified processor for local remark/rehype plugins. The
+published-content test checks Markdown, MDX, Shiki, enhanced code blocks and RSS.
+
+Output remains static; ISR is a future content/runtime migration, not enabled here.

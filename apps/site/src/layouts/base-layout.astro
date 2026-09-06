@@ -1,5 +1,10 @@
 ---
+import "@fontsource-variable/instrument-sans/index.css";
+import "@fontsource-variable/newsreader/index.css";
+import "@fontsource-variable/jetbrains-mono/index.css";
 import "~/styles/global.css";
+import { css } from "../../styled-system/css";
+import { container } from "~/styles/ui";
 
 import { SITE_TITLE } from "astro:env/server";
 
@@ -22,11 +27,15 @@ const { title, description } = Astro.props;
       description={description}
     />
   </head>
-  <body class="bg-[#faf8f5] dark:bg-[#2a2b2d] dark:text-[#fafafa]">
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
     <Header />
-    <main class="mx-auto w-full max-w-4xl p-4">
-      <slot />
+    <main id="main" class:list={[container, css({ pt: "4" })]}>
+      <div class={css({ px: { base: "2", sm: "6" } })}>
+        <slot />
+      </div>
     </main>
     <Footer />
+    <p id="copy-status" class="sr-only" role="status" aria-live="polite"></p>
   </body>
 </html>

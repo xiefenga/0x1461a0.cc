@@ -1,10 +1,10 @@
 ---
-
+import { iconButton } from "~/styles/ui";
 ---
 
-<a href="/rss.xml" class="size-12 sm:size-8" target="_blank" tabindex="-1">
+<a href="/rss.xml" class={iconButton()} aria-label="RSS 订阅" title="RSS 订阅">
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
     width="32"
     height="32"
     viewBox="0 0 24 24"

@@ -1,33 +1,60 @@
 ---
-import { Image } from "astro:assets";
-
+import { css } from "../../styled-system/css";
 import RssLink from "./rss-link.astro";
 import ThemeToggle from "./theme-toggle.astro";
 ---
-
-<!-- sticky top-0 z-10 -->
-<header class="max-w-4xl mx-auto px-4 py-8">
-  <nav class="flex flex-row gap-2 items-center justify-between">
-    <a
-      tabindex="-1"
-      draggable="false"
-      class="font-bold italic text-2xl flex flex-row gap-2 items-center justify-center focus-outline"
-      href="/"
-    >
-      <Image
-        src="/logo.jpg"
-        alt="logo"
-        width={32}
-        height={32}
-        class="rounded-full max-h-8"
-        draggable="false"
-      />
-
-      <span>0x1461A0's Blog </span>
+<header class={css({ width: "full", px: "8", py: "4" })}>
+  <nav aria-label="主导航" class={css({ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "3" })}>
+    <a href="/" aria-label="0x1461A0 博客首页" class:list={["signature", css({ display: "inline-flex", alignItems: "center", minHeight: "11", color: "ink", textDecoration: "none" })]}>
+      <svg transition:persist="header-signature" width="128" height="25.6" viewBox="5.7 3 160 32" fill="none" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path pathLength="1" style="--order: 0" d="M21 9 C10 3 3 30 12 31 C21 33 28 7 19 8 C15 8 12 12 11 15" />
+          <path pathLength="1" style="--order: 1" d="M30 17 C32 19 35 28 38 30 M40 16 C36 19 30 27 27 31" />
+          <path pathLength="1" style="--order: 2" d="M48 15 L57 8 C55 16 53 25 52 31" />
+          <path pathLength="1" style="--order: 3" d="M73 9 L62 24 C67 24 74 23 80 22 M78 8 L72 32" />
+          <path pathLength="1" style="--order: 4" d="M99 9 C90 6 80 28 87 31 C94 34 101 20 95 19 C91 18 87 22 86 25" />
+          <path pathLength="1" style="--order: 5" d="M106 15 L115 8 C113 16 111 25 110 31" />
+          <path pathLength="1" style="--order: 6" d="M120 32 C126 22 132 10 137 7 L140 31 M124 24 C130 23 136 22 144 22" />
+          <path pathLength="1" style="--order: 7" d="M162 9 C151 3 144 30 153 31 C162 33 169 7 160 8 C156 8 153 12 152 15" />
+          <g class="signature-pressure" stroke-width="3.6">
+            <path pathLength="1" style="--order: 0" d="M10 13 Q5 24 10 29" />
+            <path pathLength="1" style="--order: 2" d="M56 12 L52 29" />
+            <path pathLength="1" style="--order: 3" d="M77 13 L73 29" />
+            <path pathLength="1" style="--order: 4" d="M88 18 Q82 29 88 31" />
+            <path pathLength="1" style="--order: 5" d="M114 12 L110 29" />
+            <path pathLength="1" style="--order: 6" d="M137 11 L139 29" />
+            <path pathLength="1" style="--order: 7" d="M151 13 Q146 24 151 29" />
+          </g>
+        </g>
+      </svg>
     </a>
-    <div class="flex flex-row gap-4 items-center">
+    <div class={css({ display: "flex", gap: "1", alignItems: "center" })}>
       <RssLink />
       <ThemeToggle />
     </div>
   </nav>
 </header>
+
+<script>
+  document.addEventListener("astro:before-swap", () => {
+    document.querySelector(".signature svg")?.setAttribute("data-written", "");
+  });
+</script>
+
+<style>
+  .signature svg { overflow: visible; transition: transform 350ms cubic-bezier(.2,.8,.2,1); }
+  .signature:hover svg, .signature:focus-visible svg { transform: translateY(-1px); }
+  .signature path {
+    stroke-dasharray: 1;
+    animation: sign-in 480ms cubic-bezier(.32, .05, .35, 1) both;
+    animation-delay: calc(var(--order) * 140ms);
+  }
+  @keyframes sign-in {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+  .signature svg[data-written] path { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .signature path, .signature svg { animation: none; transition: none; transform: none; }
+  }
+</style>

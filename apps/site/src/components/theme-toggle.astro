@@ -1,130 +1,23 @@
 ---
-
+import { iconButton } from "~/styles/ui";
 ---
-
-<button id="theme-btn" data-index="-1" class="size-12 sm:size-8 cursor-pointer">
-  <!-- sun -->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="32"
-    height="32"
-    viewBox="0 0 24 24"
-    class="dark:hidden"
-  >
-    <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-    <path
-      fill="currentColor"
-      d="M11 3V2q0-.425.288-.712T12 1t.713.288T13 2v1q0 .425-.288.713T12 4t-.712-.288T11 3m0 19v-1q0-.425.288-.712T12 20t.713.288T13 21v1q0 .425-.288.713T12 23t-.712-.288T11 22m11-9h-1q-.425 0-.712-.288T20 12t.288-.712T21 11h1q.425 0 .713.288T23 12t-.288.713T22 13M3 13H2q-.425 0-.712-.288T1 12t.288-.712T2 11h1q.425 0 .713.288T4 12t-.288.713T3 13m16.75-7.325l-.35.35q-.275.275-.687.275T18 6q-.275-.275-.288-.687t.263-.713l.375-.375q.275-.3.7-.3t.725.3t.288.725t-.313.725M6.025 19.4l-.375.375q-.275.3-.7.3t-.725-.3t-.288-.725t.313-.725l.35-.35q.275-.275.688-.275T6 18q.275.275.288.688t-.263.712m12.3.35l-.35-.35q-.275-.275-.275-.687T18 18q.275-.275.688-.287t.712.262l.375.375q.3.275.3.7t-.3.725t-.725.288t-.725-.313M4.6 6.025l-.375-.375q-.3-.275-.3-.7t.3-.725t.725-.288t.725.313l.35.35q.275.275.275.688T6 6q-.275.275-.687.288T4.6 6.025M12 18q-2.5 0-4.25-1.75T6 12t1.75-4.25T12 6t4.25 1.75T18 12t-1.75 4.25T12 18m0-2q1.675 0 2.838-1.162T16 12t-1.162-2.838T12 8T9.162 9.163T8 12t1.163 2.838T12 16m0-4"
-    ></path>
-  </svg>
-
-  <!-- moon -->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="32"
-    height="32"
-    viewBox="0 0 24 24"
-    class="hidden dark:block"
-  >
-    <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-    <path
-      fill="currentColor"
-      d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"
-    ></path>
-  </svg>
+<button id="theme-btn" type="button" class={iconButton()} aria-label="切换深色模式" aria-pressed="false" title="切换主题">
+  <svg class="theme-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 13a9 9 0 0 1-9.8-9.8A9 9 0 1 0 20.8 13Z" /></svg>
+  <svg class="theme-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" /></svg>
 </button>
-
-<style is:global>
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
-  }
-
-  .dark::view-transition-old(root) {
-    z-index: 1;
-  }
-
-  .dark::view-transition-new(root) {
-    z-index: 9999;
-  }
-
-  ::view-transition-old(root) {
-    z-index: 9999;
-  }
-
-  ::view-transition-new(root) {
-    z-index: 1;
-  }
-</style>
-
-<script is:inline>
-  const theme = (() => {
-    const localStorageTheme = localStorage?.getItem("theme") ?? "";
-    if (["dark", "light"].includes(localStorageTheme)) {
-      return localStorageTheme;
-    }
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return "dark";
-    }
-    return "light";
-  })();
-
-  if (theme === "light") {
-    document.documentElement.classList.remove("dark");
-  } else {
-    document.documentElement.classList.add("dark");
-  }
-
-  window.localStorage.setItem("theme", theme);
-
-  const toggleTheme = () => {
-    const element = document.documentElement;
-    element.classList.toggle("dark");
-    const isDark = element.classList.contains("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
+<script>
+  const syncButton = () => {
+    const dark = document.documentElement.classList.contains("dark");
+    const button = document.getElementById("theme-btn");
+    button?.setAttribute("aria-pressed", String(dark));
+    button?.setAttribute("aria-label", dark ? "切换浅色模式" : "切换深色模式");
   };
-
-  const supportsViewTransition = () => {
-    return typeof document.startViewTransition === "function";
-  };
-
-  const handleToggleClick = (e) => {
-    if (supportsViewTransition()) {
-      const x = e.clientX;
-      const y = e.clientY;
-      const endRadius = Math.hypot(
-        Math.max(x, innerWidth - x),
-        Math.max(y, innerHeight - y)
-      );
-      const isDark = document.documentElement.classList.contains("dark");
-      const transition = document.startViewTransition(toggleTheme);
-
-      transition.ready.then(() => {
-        const clipPath = [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${endRadius}px at ${x}px ${y}px)`,
-        ];
-        document.documentElement.animate(
-          {
-            clipPath: isDark ? [...clipPath].reverse() : clipPath,
-          },
-          {
-            duration: 400,
-            easing: "ease-in",
-            fill: "forwards",
-            pseudoElement: isDark
-              ? "::view-transition-old(root)"
-              : "::view-transition-new(root)",
-          }
-        );
-      });
-    } else {
-      toggleTheme();
-    }
-  };
-
-  document
-    .getElementById("theme-btn")
-    ?.addEventListener("click", handleToggleClick);
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element) || !event.target.closest("#theme-btn")) { return; }
+    const dark = document.documentElement.classList.toggle("dark");
+    try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch { /* Theme still works when storage is unavailable. */ }
+    syncButton();
+  });
+  document.addEventListener("astro:page-load", syncButton);
+  syncButton();
 </script>

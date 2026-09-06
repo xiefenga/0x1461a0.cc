@@ -2,7 +2,7 @@ import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
-import tailwindcss from "@tailwindcss/vite";
+import { unified } from "@astrojs/markdown-remark";
 import { defineConfig, envField } from "astro/config";
 
 import { rehypeCodeBlock } from "./plugins/markdown/rehype-code-block";
@@ -14,9 +14,6 @@ export default defineConfig({
   output: "static",
   adapter: vercel(),
   integrations: [mdx(), sitemap(), react()],
-  vite: {
-    plugins: [tailwindcss()],
-  },
   env: {
     schema: {
       SITE_TITLE: envField.string({
@@ -36,8 +33,9 @@ export default defineConfig({
         dark: "vitesse-dark",
       },
     },
-    remarkPlugins: [remarkSanitizeLinkHtml],
-    rehypePlugins: [rehypeCodeBlock],
-    remarkRehype: {},
+    processor: unified({
+      remarkPlugins: [remarkSanitizeLinkHtml],
+      rehypePlugins: [rehypeCodeBlock],
+    }),
   },
 });

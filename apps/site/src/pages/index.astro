@@ -1,49 +1,20 @@
 ---
+import { css } from "../../styled-system/css";
 import BaseLayout from "~/layouts/base-layout.astro";
-
 import PostList from "~/components/post-list.astro";
-
 import { getBlogPosts, getPostSlug } from "~/lib/posts";
-
 const posts = await getBlogPosts();
 ---
-
 <BaseLayout>
-  <div class="mb-6 relative">
-    <div class="relative inline-block px-1">
-      <h1 class="text-2xl font-bold">Posts</h1>
-      <span
-        class="absolute inset-x-0 bottom-0 -z-10 h-3 bg-[#C4E7E8] opacity-60 dark:bg-[#1D1E1F] dark:opacity-100"
-      >
-        <!-- block -->
-      </span>
+  <header class={css({ mb: "12" })}>
+    <div class={css({ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "4", flexWrap: "wrap" })}>
+      <h1 class={css({ textStyle: "title" })}>posts</h1>
+      <a class={css({ textStyle: "meta" })} href="https://legacy.0x1461a0.cc/" target="_blank" rel="noopener noreferrer">旧文章列表 ↗</a>
     </div>
-    <div class="absolute right-0">
-      <a
-        class="hover:underline"
-        href="https://legacy.0x1461a0.cc/"
-        target="_blank">旧文章列表</a
-      >
-    </div>
-  </div>
-
-  {
-    posts.length > 0 ? (
-      <PostList
-        class="min-h-[calc(100vh-276px)]"
-        posts={posts.map((post) => ({
-          slug: getPostSlug(post),
-          title: post.data.title,
-          created: post.data.created,
-          updated: post.data.updated,
-        }))}
-      />
-    ) : (
-      <div class="min-h-[400px] flex items-center justify-center">
-        <p class="text-gray-500 dark:text-gray-400 text-center py-8">
-          暂无文章
-        </p>
-      </div>
-    )
-  }
+  </header>
+  {posts.length > 0 ? (
+    <PostList posts={posts.map((post) => ({ slug: getPostSlug(post), title: post.data.title, created: post.data.created, updated: post.data.updated }))} />
+  ) : (
+    <p class={css({ color: "secondary", py: "12" })}>暂无文章</p>
+  )}
 </BaseLayout>

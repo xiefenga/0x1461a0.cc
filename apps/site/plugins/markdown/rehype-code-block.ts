@@ -30,6 +30,7 @@ const copyIconSvg: Element = {
   tagName: "svg",
   properties: {
     className: ["code-block-copy-icon"],
+    ariaHidden: "true",
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
     fill: "none",
@@ -69,6 +70,7 @@ const checkIconSvg: Element = {
   tagName: "svg",
   properties: {
     className: ["code-block-check-icon"],
+    ariaHidden: "true",
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
     fill: "none",
@@ -93,23 +95,7 @@ const cloneElement = (el: Element): Element =>
 
 export const rehypeCodeBlock = () => {
   return (tree: Root) => {
-    // 第一遍：给 code 元素添加 not-prose 类
-    visit(tree, "element", (node, _index, parent) => {
-      if (
-        node.tagName === "code" &&
-        isElement(parent) &&
-        parent.tagName === "pre"
-      ) {
-        node.properties = node.properties || {};
-        const existing = node.properties.className;
-        node.properties.className = [
-          ...(Array.isArray(existing) ? existing : []),
-          "not-prose",
-        ];
-      }
-    });
-
-    // 第二遍：用 div 容器包裹 pre，并添加语言标签和复制按钮
+    // 用容器包裹 pre，并添加语言标签和复制按钮。
     visit(tree, "element", (node, index, parent) => {
       const firstChild = node.children?.[0];
       // 找到 pre > code 结构（Shiki 处理后 pre 的第一个元素子节点是 code）
@@ -142,6 +128,8 @@ export const rehypeCodeBlock = () => {
           properties: {
             className: ["code-block-copy"],
             type: "button",
+            ariaLabel: "复制代码",
+            title: "复制代码",
           },
           children: [cloneElement(copyIconSvg), cloneElement(checkIconSvg)],
         };

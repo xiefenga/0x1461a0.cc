@@ -1,8 +1,9 @@
 ---
-const today = new Date();
+import { css } from "../../styled-system/css";
+import { container } from "~/styles/ui";
 ---
-
-<hr class="mt-8 border-dashed border-gray-300 dark:border-gray-600 mx-12" />
-<footer class="text-center p-4 mx-auto w-full max-w-3xl">
-  © 2022 - PRESENT 0x1461A0. All rights reserved.
+<footer class:list={[container, css({ mt: "16", pb: "8" })]}>
+  <div class={css({ borderTopWidth: "1px", borderColor: "line", pt: "6", textStyle: "meta", display: "flex", flexWrap: "wrap", gap: "2", justifyContent: "space-between" })}>
+    <span>© 2022–PRESENT 0x1461A0</span><span>All rights reserved.</span>
+  </div>
 </footer>

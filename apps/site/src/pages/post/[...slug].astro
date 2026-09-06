@@ -1,67 +1,36 @@
 ---
 import { render } from "astro:content";
-
+import dayjs from "dayjs";
+import { css } from "../../../styled-system/css";
+import TableOfContents from "~/components/table-of-contents.astro";
 import BaseLayout from "~/layouts/base-layout.astro";
 import { getBlogPosts, getPostSlug } from "~/lib/posts";
-
 import type { CollectionEntry } from "astro:content";
 
 export const getStaticPaths = async () => {
   const posts = await getBlogPosts();
-  return posts.map((post) => ({
-    params: { slug: getPostSlug(post) },
-    props: post,
-  }));
+  return posts.map((post) => ({ params: { slug: getPostSlug(post) }, props: post }));
 };
-
 type Props = CollectionEntry<"blog">;
-
 const post = Astro.props;
-
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
-
-<BaseLayout
-  title={post.data.title}
-  description={post.data.description}
->
+<BaseLayout title={post.data.title} description={post.data.description}>
   <article>
-    <h1 class="text-center text-4xl font-bold leading-loose mb-10">
-      {post.data.title}
-    </h1>
-    <div
-      class="prose w-full max-w-full dark:prose-invert
-      prose-code:before:content-none prose-code:after:content-none
-      prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-code:font-medium
-      prose-code:bg-[#ebe7df] prose-code:mx-1 dark:prose-code:bg-[#8e96aa24]
-      prose-pre:m-0 prose-a:no-underline
-      prose-a:font-normal prose-a:border-b prose-a:border-dashed prose-a:border-gray-300 prose-a:transition-all prose-a:duration-300 prose-a:hover:border-gray-500 prose-a:hover:opacity-60"
-    >
-      <Content />
+    <header class={css({ mb: "12" })}>
+      <a href="/" class={css({ textStyle: "meta", display: "inline-block", mb: "6" })}>← 全部文章</a>
+      <h1 class={css({ textStyle: "title", overflowWrap: "anywhere", mb: "4" })}>{post.data.title}</h1>
+      <div class={css({ textStyle: "meta", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "3" })}>
+        <time datetime={post.data.created.toISOString()} class={css({ fontFamily: "code" })}>{dayjs(post.data.created).format("YYYY-MM-DD")}</time>
+        {post.data.tags.map((tag) => <span class={css({ bg: "surface", color: "secondary", borderRadius: "sm", px: "2", py: "1" })}>{tag}</span>)}
+      </div>
+    </header>
+    <div class={css({ position: "relative" })}>
+      <div class="prose"><Content /></div>
+      <TableOfContents headings={headings} />
     </div>
   </article>
-
-  <script>
-    const registerCopyCode = () => {
-      const codeBlocks = document.querySelectorAll(".code-block-wrapper");
-      codeBlocks.forEach((codeBlock) => {
-        const copyBtn = codeBlock.querySelector(".code-block-copy");
-        const code = codeBlock.querySelector("code");
-        copyBtn?.addEventListener("click", () => {
-          if (code) {
-            const btn = copyBtn as HTMLElement;
-            if (btn.dataset.isCopying === "true") {
-              return;
-            }
-            btn.dataset.isCopying = "true";
-            navigator.clipboard.writeText(code.textContent ?? "");
-            setTimeout(() => {
-              delete btn.dataset.isCopying;
-            }, 1000);
-          }
-        });
-      });
-    };
-    document.addEventListener("DOMContentLoaded", registerCopyCode);
+<script>
+    import "~/scripts/copy-code";
   </script>
 </BaseLayout>

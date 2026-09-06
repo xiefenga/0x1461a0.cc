@@ -1,6 +1,6 @@
 # @0x1461a0.cc/site
 
-基于 **Astro 5** 构建的个人博客，部署在 **Vercel**。静态生成，支持暗色模式、代码块增强和 View Transition API 页面过渡。站点语言为中文 (zh-CN)。
+基于 **Astro 7** 构建的个人博客，部署在 **Vercel**。静态生成，支持暗色模式、代码块增强和 View Transition API 页面过渡。站点语言为中文 (zh-CN)。
 
 ## 命令
 
@@ -13,7 +13,7 @@
 
 ## 技术栈
 
-Astro 5 + TypeScript (strict) + React 19 + Tailwind CSS 4 + MDX
+Astro 7 + TypeScript (strict) + React 19 + Panda CSS + MDX
 
 ## 架构
 
@@ -25,7 +25,7 @@ Astro 5 + TypeScript (strict) + React 19 + Tailwind CSS 4 + MDX
 - `src/pages/` — 路由：首页（文章列表）、`post/[...slug]`（文章详情）、`rss.xml.ts`（RSS 订阅）
 - `src/components/` — Astro 组件（header、footer、post-list、theme-toggle 等）
 - `src/layouts/` — `base-layout.astro` 包裹所有页面
-- `src/styles/global.css` — Tailwind 导入、自定义滚动条/代码块样式、暗色模式
+- `src/styles/global.css` — Panda layers、语义 token 引用、正文/代码块样式、暗色模式
 - `plugins/markdown/` — 自定义 rehype/remark 插件
 
 **Markdown 插件（`plugins/markdown/`）：**
@@ -34,7 +34,7 @@ Astro 5 + TypeScript (strict) + React 19 + Tailwind CSS 4 + MDX
 
 **语法高亮：** Shiki 双主题 — "vitesse-light"（亮色）和 "vitesse-dark"（暗色），配置在 `astro.config.ts`。
 
-**暗色模式：** 通过 theme toggle 组件实现，使用 View Transition API 做过渡动画。CSS 通过 `<html>` 上的 `.dark` 类切换。
+**暗色模式：** 通过 theme toggle 组件实现，在 head 中恢复主题，按钮支持 ClientRouter 页面切换。CSS 通过 `<html>` 上的 `.dark` 类切换。
 
 **环境变量**（服务端，定义在 `astro.config.ts` 的 `env.schema`）：
 - `SITE_TITLE` — 博客标题

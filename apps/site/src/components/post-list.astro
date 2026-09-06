@@ -1,5 +1,7 @@
 ---
 import dayjs from "dayjs";
+import { css } from "../../styled-system/css";
+import { postRow } from "~/styles/ui";
 
 interface Props {
   posts: {
@@ -35,26 +37,26 @@ const sortedYears = Object.keys(postsByYear)
 <div class:list={[className]}>
   {
     sortedYears.map((year) => (
-      <section class="mb-6">
-        <h2 class="text-lg font-bold mb-4 text-[#a1a1a1] dark:text-[#a1a1a1]">
+      <section class={css({ mb: "12" })}>
+        <h2 class={css({ fontSize: "xl", fontWeight: "medium", lineHeight: "compact", color: "secondary", fontFamily: "code", mb: "4" })}>
           {year}
         </h2>
-        <ul class="space-y-4">
+        <ul>
           {postsByYear[year].map((post) => (
             <li>
               <a
-                class="group flex items-center justify-between gap-4 rounded-xl"
+                class={postRow}
                 href={`/post/${post.slug}/`}
               >
                 <span
                   title={post.title}
-                  class="text-lg truncate group-hover:opacity-70 transition-opacity"
+                  class={css({ overflowWrap: "anywhere", minWidth: "0" })}
                 >
                   {post.title}
                 </span>
-                <span class="shrink-0 text-sm text-gray-400 dark:text-gray-500">
-                  {dayjs(post.created).format("YYYY-MM-DD")}
-                </span>
+                <time datetime={post.created.toISOString()} class={css({ textStyle: "meta", fontFamily: "code", flexShrink: "0", whiteSpace: "nowrap" })}>
+                  {dayjs(post.created).format("MM-DD")}
+                </time>
               </a>
             </li>
           ))}
